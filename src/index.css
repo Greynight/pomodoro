@@ -1,0 +1,60 @@
+body {
+  background-color: #333333;
+}
+
+#tomato {
+  background-color: #333333;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  left: calc(50% - 100px);
+  border: 2px solid white;
+  overflow: hidden;
+}
+
+.switch {
+  cursor: pointer;
+  color: white;
+}
+
+.text-bottom {
+  justify-content: center;
+  display: flex;
+  align-items: flex-end;
+}
+
+#tomato-fill {
+  width: 100%;
+  background-color: DeepSkyBlue;
+  position: absolute;
+  bottom: 0;
+}
+
+.value {
+  color: white;
+  font-size: 17pt;
+  padding: 0 10px;
+}
+
+.text-white {
+  color: white;
+}
+
+#tomato-text {
+  position: relative;
+  height: 50%;
+  top: 0;
+  line-height: 100px;
+  font-size: 17pt;
+}
+
+#tomato-time {
+  position: relative;
+  height: 50%;
+  bottom: 0;
+  line-height: 100px;
+  font-size: 17pt;
+}
+

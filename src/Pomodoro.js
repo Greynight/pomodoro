@@ -1,6 +1,9 @@
 import React from 'react';
 
-class App extends React.Component {
+import Switcher from './Switcher';
+import Tomato from './Tomato';
+
+class Pomodoro extends React.Component {
   constructor(props) {
     super();
 
@@ -88,15 +91,28 @@ class App extends React.Component {
 
     this.setState({time: `${minutes}:${seconds}`});
   };
+
   // TODO different color for different modes?
   changeMode = () => {
     this.pauseTimer();
 
     let mode = this.MODE_CHANGE[this.state.mode];
     this.setState({mode});
+
+    this.clearSession();
+
+    let message = `${mode} has been started`;
+
+    if (this.state.notifications) {
+      new Notification(message);
+    }
+
+    this.startTimer(mode);
+  };
+
+  clearSession = () => {
     this.setState({tomatoFillHeight: 0});
     this.setState({secondsGone: null});
-    this.startTimer(mode);
   };
 
   onTimerClick = () => {
@@ -104,14 +120,50 @@ class App extends React.Component {
     if (!this.state.sessionId) {
       let mode = this.state.mode || this.SESSION;
       this.startTimer(mode);
+
+      this.startTimeTracking();
       // pause timer
     } else {
       this.pauseTimer();
+
+      // track working time
+      this.saveTimeTracking();
     }
   };
 
   onValueChange = (value, name) => {
-    this.setState({[name]: value});
+    if (!this.state.sessionId) {
+      this.setState({[name]: value});
+
+      if (this.state.mode) {
+        this.clearSession();
+      }
+    }
+  };
+
+  startTimeTracking = () => {
+    const today = this.getTodayTimeStamp();
+    const timestamp = Date.now();
+
+    localStorage[today] = {...localStorage[today], start: timestamp};
+  };
+
+  // save total working time to localStorage for now
+  // TODO use smth like mlab.com to store data
+  saveTimeTracking = () => {
+    const timestamp = Date.now();
+    const today = this.getTodayTimeStamp();
+    const start = localStorage[today].start;
+
+    // save duration in minutes
+    localStorage[today].duration = localStorage[today].duration + (timestamp - start) / 1000 / 60;
+  };
+
+  getTodayTimeStamp = () => {
+    const msToDate = 1000 * 60 * 60 * 24;
+    const timestamp = Date.now();
+
+    return timestamp - timestamp % msToDate;
   };
 
   render() {
@@ -149,60 +201,4 @@ class App extends React.Component {
   }
 }
 
-class Tomato extends React.Component {
-  constructor(props) {
-    super();
-
-    this.onTomatoClick = props.onTomatoClick;
-  }
-
-  render() {
-    const height = this.props.height;
-    const mode = this.props.mode || 'start';
-    const modeText = mode.toUpperCase();
-    const time = this.props.time || '00.00';
-
-    return (
-      <div id="tomato" onClick={this.onTomatoClick}>
-        <div id="tomato-fill" style={{height: height + '%'}}></div>
-        <div id="tomato-text" className="text-white">{modeText}</div>
-        <div id="tomato-time" className="text-white">{time}</div>
-      </div>
-    );
-  }
-}
-
-class Switcher extends React.Component {
-  constructor(props) {
-    super();
-
-    this.value = props.value;
-    this.name = props.name;
-    this.onValueChange = props.onChange;
-  }
-
-  decrease = () => {
-    const value = this.value > 1 ? this.value-- : 1;
-    this.onValueChange(value, this.name);
-  };
-
-  // max value is 60 min
-  increase = () => {
-    const value = this.value < 61 ? this.value++ : 60;
-    this.onValueChange(value, this.name);
-  };
-
-  render() {
-    const value = this.value;
-
-    return (
-      <div>
-        <span className="switch" onClick={this.decrease}> ➖ </span>
-        <span className="value">{value}</span>
-        <span className="switch" onClick={this.increase}> ➕ </span>
-      </div>
-    );
-  }
-}
-
-export default App;
+export default Pomodoro;

@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Pomodoro from './Pomodoro';
 import './index.css';
 
 // TODO bootstrap
 
 ReactDOM.render(
-  <App />,
+  <Pomodoro />,
   document.getElementById('root')
 );

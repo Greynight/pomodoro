@@ -156,7 +156,7 @@ class Pomodoro extends React.Component {
     const start = localStorage[today].start;
 
     // save duration in minutes
-    localStorage[today].duration = localStorage[today].duration + (timestamp - start) / 1000 / 60;
+    localStorage[today].duration += (timestamp - start) / 1000 / 60;
   };
 
   getTodayTimeStamp = () => {
